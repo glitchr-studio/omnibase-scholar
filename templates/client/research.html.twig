@@ -1,0 +1,24 @@
+{# The research: themes, then projects. #}
+{% extends 'layout1.html.twig' %}
+
+{% block title %}{{ '@scholar.research.title'|trans }}{% if scholar %} · {{ scholar.name }}{% endif %}{% endblock %}
+{% block description %}{{ '@scholar.research.description'|trans({name: scholar.name|default('')}) }}{% endblock %}
+
+{% block stylesheets %}{{ parent() }}<link rel="stylesheet" href="{{ asset('bundles/scholar/css/scholar.css') }}">{% endblock %}
+
+{% block content %}
+<section class="scholar scholar-research">
+    <header class="scholar-head">
+        <p class="scholar-eyebrow">{{ scholar.name|default('') }}</p>
+        <h1>{{ '@scholar.research.title'|trans }}</h1>
+        {% if scholar and scholar.keywords %}<p class="scholar-tags">{% for k in scholar.keywords %}<span>{{ k }}</span>{% endfor %}</p>{% endif %}
+    </header>
+    {% if themes %}
+    <section class="scholar-section"><h2>{{ '@scholar.research.themes'|trans }}</h2><div class="scholar-themes">{% for theme in themes %}{% include '@Scholar/client/_theme_card.html.twig' %}{% endfor %}</div></section>
+    {% endif %}
+    {% if projects %}
+    <section class="scholar-section"><h2>{{ '@scholar.research.projects'|trans }}</h2><div class="scholar-themes">{% for theme in projects %}{% include '@Scholar/client/_theme_card.html.twig' %}{% endfor %}</div></section>
+    {% endif %}
+    {% if not themes and not projects %}{% include '@Scholar/client/_draft.html.twig' with {kind: 'research', message: '@scholar.draft.research'|trans} %}{% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,39 @@
+{
+    "name": "omnibase/scholar",
+    "description": "Scholar for omnibase: a researcher's site - publications read from OpenAlex, HAL, Crossref and the other glitchr/omnischolar sources, validated before they show, with manual overrides that survive each sync; the CV (positions, degrees, awards, grants, courses, supervisions), research themes and projects; publication, book, CV and teaching pages, BibTeX / RIS exports, schema.org JSON-LD.",
+    "type": "symfony-bundle",
+    "license": "LGPL-3.0-or-later",
+    "keywords": ["omnibase", "scholar", "publications", "cv", "bibtex", "openalex", "hal", "omnischolar"],
+    "authors": [{"name": "Marco Meyer", "email": "marco.meyer@glitchr.io"}],
+    "require": {
+        "php": "^8.2",
+        "doctrine/orm": "^2.15|^3.0",
+        "glitchr/omnibase": "3.0.*-dev",
+        "glitchr/omnischolar": "^1.0@dev",
+        "omnibase/admin": "dev-main",
+        "symfony/config": "^6.4|^7.0|^8.0",
+        "symfony/console": "^6.4|^7.0|^8.0",
+        "symfony/dependency-injection": "^6.4|^7.0|^8.0",
+        "symfony/http-kernel": "^6.4|^7.0|^8.0",
+        "symfony/string": "^6.4|^7.0|^8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5|^11.0|^12.0"
+    },
+    "suggest": {
+        "omnischolar/openalex": "Profiles, works, citations, h-index",
+        "omnischolar/hal": "French open archive: deposits and full texts",
+        "omnischolar/crossref": "Reference metadata by DOI",
+        "omnischolar/orcid": "The CV: positions, degrees, distinctions",
+        "omnischolar/openlibrary": "Books, editions, covers",
+        "omnibase/agenda": "Talks and lectures: a scholar's interventions are agenda Events"
+    },
+    "autoload": {
+        "psr-4": {"Base\\Scholar\\": "./src"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Base\\Scholar\\Tests\\": "./tests"}
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

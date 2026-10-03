@@ -1,0 +1,71 @@
+{#
+ # One publication: what it is, who wrote it, where it appeared, its
+ # abstract, what can be read, how to cite it (the reference to copy, its
+ # BibTeX, the files a reference manager takes), its themes.
+ #}
+{% extends 'layout1.html.twig' %}
+
+{% block title %}{{ publication.title }}{% endblock %}
+{% block description %}{{ (publication.abstract ?? publication.title)|striptags|slice(0, 300) }}{% endblock %}
+
+{% block stylesheets %}{{ parent() }}<link rel="stylesheet" href="{{ asset('bundles/scholar/css/scholar.css') }}">{% include '@Scholar/client/_jsonld.html.twig' %}{% endblock %}
+
+{% block content %}
+<section class="scholar scholar-publication">
+    <p class="scholar-back"><a href="{{ path(publication.book ? 'scholar_books' : 'scholar_publications') }}">← {{ (publication.book ? '@scholar.books.title' : '@scholar.publications.title')|trans }}</a></p>
+    <header class="scholar-head{{ publication.coverUrl ? ' has-cover' }}">
+        {% if publication.coverUrl %}<img class="scholar-cover" src="{{ publication.coverUrl }}" alt="" loading="lazy">{% endif %}
+        <div>
+            <p class="scholar-eyebrow">{{ publication.type|scholar_type_label }} · {{ publication.year ?? '—' }}</p>
+            <h1>{{ publication.title }}</h1>
+            {% if publication.authors %}<p class="scholar-pub-authors">{% include '@Scholar/client/_authors.html.twig' %}</p>{% endif %}
+            {% if publication.venue %}<p class="scholar-pub-venue"><em>{{ publication.venue }}</em>{% if publication.work.volume|default(null) %}, {{ publication.work.volume }}{% if publication.work.issue|default(null) %}({{ publication.work.issue }}){% endif %}{% endif %}{% if publication.work.pages|default(null) %}, {{ publication.work.pages }}{% endif %}</p>{% endif %}
+            <p class="scholar-pub-links">
+                {% if publication.fullTextUrl %}<a class="scholar-button" href="{{ publication.fullTextUrl }}" rel="noopener" target="_blank">{{ '@scholar.publication.full_text'|trans }}</a>{% endif %}
+                {% if publication.link %}<a href="{{ publication.link }}" rel="noopener" target="_blank">{{ publication.doi ? 'DOI ' ~ publication.doi : '@scholar.publication.read'|trans }}</a>{% endif %}
+                {% if publication.buyUrl %}<a href="{{ publication.buyUrl }}" rel="noopener" target="_blank">{{ '@scholar.publication.buy'|trans }}</a>{% endif %}
+                {% if publication.halId %}<a href="https://hal.science/{{ publication.halId }}" rel="noopener" target="_blank">HAL {{ publication.halId }}</a>{% endif %}
+            </p>
+        </div>
+    </header>
+
+    {% if publication.note %}<p class="scholar-pub-note">{{ publication.note }}</p>{% endif %}
+
+    {% if publication.abstract %}
+    <section class="scholar-section">
+        <h2>{{ '@scholar.publication.abstract'|trans }}</h2>
+        <div class="scholar-prose">{{ publication.abstract|striptags('<i><em><b><strong><sub><sup>')|raw|nl2br }}</div>
+    </section>
+    {% endif %}
+
+    {% if publication.editions|length > 1 %}
+    <section class="scholar-section">
+        <h2>{{ '@scholar.publication.editions'|trans }}</h2>
+        <ul class="scholar-editions">{% for edition in publication.editions %}<li>{{ edition.year ?? '—' }}{% if edition.publisher %} · {{ edition.publisher }}{% endif %}{% if edition.isbns %} · ISBN {{ edition.isbns|join(', ') }}{% endif %}</li>{% endfor %}</ul>
+    </section>
+    {% endif %}
+
+    <section class="scholar-section scholar-cite" id="cite">
+        <h2>{{ '@scholar.publication.cite'|trans }}</h2>
+        <p class="scholar-reference">{{ reference }}</p>
+        <details>
+            <summary>BibTeX</summary>
+            <pre class="scholar-bibtex">{{ bibtex }}</pre>
+        </details>
+        <p class="scholar-exports">
+            <a href="{{ path('scholar_publication_export', {id: publication.id, format: 'bib'}) }}" download>BibTeX</a>
+            <a href="{{ path('scholar_publication_export', {id: publication.id, format: 'ris'}) }}" download>RIS</a>
+            <a href="{{ path('scholar_publication_export', {id: publication.id, format: 'json'}) }}" download>CSL-JSON</a>
+        </p>
+    </section>
+
+    {% if publication.themes|length %}
+    <section class="scholar-section">
+        <h2>{{ '@scholar.research.themes'|trans }}</h2>
+        <p class="scholar-tags">{% for theme in publication.themes %}{% if theme.visible %}<a href="{{ path('scholar_theme', {slug: theme.slug}) }}">{{ theme.title }}</a>{% endif %}{% endfor %}</p>
+    </section>
+    {% endif %}
+
+    {% if publication.sources %}<p class="scholar-sources">{{ '@scholar.publication.sources'|trans({sources: publication.sources|join(', ')}) }}</p>{% endif %}
+</section>
+{% endblock %}

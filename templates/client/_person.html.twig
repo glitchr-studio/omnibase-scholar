@@ -1,0 +1,27 @@
+{#
+ # The person: the portrait (or its marked draft), the name and the title,
+ # the affiliation, the identifiers, the counts. `scholar`.
+ #}
+<div class="scholar-person">
+    {% if scholar.portraitUrl %}<img class="scholar-portrait" src="{{ scholar.portraitUrl }}" alt="{{ scholar.name }}">
+    {% else %}{% include '@Scholar/client/_draft.html.twig' with {kind: 'portrait', message: '@scholar.draft.portrait'|trans} %}{% endif %}
+    <div class="scholar-person-text">
+        <h1>{{ scholar.fullName }}</h1>
+        {% if scholar.jobTitle %}<p class="scholar-job">{{ scholar.jobTitle }}</p>{% endif %}
+        {% if scholar.affiliation %}<p class="scholar-affiliation">{% if scholar.affiliationUrl %}<a href="{{ scholar.affiliationUrl }}" rel="noopener" target="_blank">{{ scholar.affiliation }}</a>{% else %}{{ scholar.affiliation }}{% endif %}</p>{% endif %}
+        <p class="scholar-ids">
+            {% if scholar.orcid %}<a href="https://orcid.org/{{ scholar.orcid }}" rel="noopener me" target="_blank">ORCID {{ scholar.orcid }}</a>{% endif %}
+            {% for url in scholar.identityUrls %}{% if 'orcid.org' not in url %}<a href="{{ url }}" rel="noopener me" target="_blank">{{ url|replace({'https://': '', 'http://': '', 'www.': ''})|split('/')|first }}</a>{% endif %}{% endfor %}
+        </p>
+        {% set m = scholar.metrics %}
+        {% if m %}
+        <dl class="scholar-metrics">
+            {% if m.works is defined %}<div><dt>{{ '@scholar.metrics.works'|trans }}</dt><dd>{{ m.works|format_number }}</dd></div>{% endif %}
+            {% if m.citations is defined %}<div><dt>{{ '@scholar.metrics.citations'|trans }}</dt><dd>{{ m.citations|format_number }}</dd></div>{% endif %}
+            {% if m.hIndex is defined %}<div><dt>h-index</dt><dd>{{ m.hIndex }}</dd></div>{% endif %}
+            {% if m.i10Index is defined %}<div><dt>i10</dt><dd>{{ m.i10Index }}</dd></div>{% endif %}
+        </dl>
+        <p class="scholar-metrics-source">{{ '@scholar.metrics.according_to'|trans({source: m.source|default('')|capitalize, date: m.at is defined ? m.at|date('Y-m-d') : ''}) }}</p>
+        {% endif %}
+    </div>
+</div>

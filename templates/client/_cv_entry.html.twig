@@ -1,0 +1,14 @@
+{# One line of the CV: when, what, where, and a few words. `entry`, `section`. #}
+<li class="scholar-cv-entry{{ entry.current ? ' is-current' }}">
+    <span class="scholar-cv-when">{{ entry.period ?? '' }}</span>
+    <div class="scholar-cv-what">
+        <b>{% if entry.url %}<a href="{{ entry.url }}" rel="noopener" target="_blank">{{ entry.title }}</a>{% else %}{{ entry.title }}{% endif %}</b>
+        {%- if section == 'supervisions' %} <span class="scholar-cv-kind">{{ entry.level.label|trans({}, 'scholar') }}</span>{% endif %}
+        {%- if entry.organization %}<span class="scholar-cv-where">{{ entry.organization }}{% if entry.department is defined and entry.department %}, {{ entry.department }}{% endif %}{% if entry.city %}, {{ entry.city }}{% endif %}{% if entry.country %} ({{ entry.country }}){% endif %}</span>{% endif %}
+        {%- if section == 'degrees' and entry.thesis %}<span class="scholar-cv-detail">{{ entry.thesis }}{% if entry.advisor %} — {{ '@scholar.cv.advisor'|trans({name: entry.advisor}) }}{% endif %}</span>{% endif %}
+        {%- if section == 'grants' and (entry.role or entry.reference or entry.amount) %}<span class="scholar-cv-detail">{{ [entry.role, entry.reference, entry.amount]|filter(v => v)|join(' · ') }}</span>{% endif %}
+        {%- if section == 'courses' and (entry.level or entry.volume) %}<span class="scholar-cv-detail">{{ [entry.level, entry.volume]|filter(v => v)|join(' · ') }}</span>{% endif %}
+        {%- if section == 'supervisions' %}{% if entry.subject %}<span class="scholar-cv-detail">{{ entry.subject }}</span>{% endif %}{% if entry.coSupervisors or entry.outcome %}<span class="scholar-cv-detail">{{ [entry.coSupervisors ? '@scholar.cv.with'|trans({names: entry.coSupervisors}) : null, entry.outcome]|filter(v => v)|join(' · ') }}</span>{% endif %}{% endif %}
+        {%- if entry.description %}<span class="scholar-cv-detail">{{ entry.description }}</span>{% endif %}
+    </div>
+</li>

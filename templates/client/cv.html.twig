@@ -1,0 +1,41 @@
+{#
+ # The CV: the person, the biography (or its marked draft), each section -
+ # positions, degrees, distinctions, grants, courses, supervisions -, and
+ # the selected publications.
+ #}
+{% extends 'layout1.html.twig' %}
+
+{% block title %}{{ '@scholar.cv.title'|trans }}{% if scholar %} · {{ scholar.name }}{% endif %}{% endblock %}
+{% block description %}{{ '@scholar.cv.description'|trans({name: scholar.name|default('')}) }}{% endblock %}
+
+{% block stylesheets %}{{ parent() }}<link rel="stylesheet" href="{{ asset('bundles/scholar/css/scholar.css') }}">{% include '@Scholar/client/_jsonld.html.twig' %}{% endblock %}
+
+{% block content %}
+<section class="scholar scholar-cv">
+    {% if scholar %}
+    <header class="scholar-head">{% include '@Scholar/client/_person.html.twig' %}</header>
+    <section class="scholar-section">
+        <h2>{{ '@scholar.cv.biography'|trans }}</h2>
+        {% if scholar.biography %}<div class="scholar-prose">{% for p in scholar.biographyParagraphs %}<p>{{ p|nl2br }}</p>{% endfor %}</div>
+        {% else %}{% include '@Scholar/client/_draft.html.twig' with {kind: 'biography', message: '@scholar.draft.biography'|trans} %}{% endif %}
+    </section>
+    {% endif %}
+
+    {% for section, entries in sections %}
+    <section class="scholar-section" id="{{ section }}">
+        <h2>{{ ('@scholar.cv.section.' ~ section)|trans }}</h2>
+        <ol class="scholar-cv-list">{% for entry in entries %}{% include '@Scholar/client/_cv_entry.html.twig' %}{% endfor %}</ol>
+    </section>
+    {% else %}
+    <section class="scholar-section">{% include '@Scholar/client/_draft.html.twig' with {kind: 'cv', message: '@scholar.draft.cv'|trans} %}</section>
+    {% endfor %}
+
+    {% if selected %}
+    <section class="scholar-section" id="selected">
+        <h2>{{ '@scholar.cv.selected'|trans }}</h2>
+        <div class="scholar-list">{% for publication in selected %}{% include '@Scholar/client/_publication.html.twig' %}{% endfor %}</div>
+        <p><a class="scholar-more" href="{{ path('scholar_publications') }}">{{ '@scholar.publications.all'|trans }} →</a></p>
+    </section>
+    {% endif %}
+</section>
+{% endblock %}

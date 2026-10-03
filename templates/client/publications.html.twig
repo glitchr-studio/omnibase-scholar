@@ -1,0 +1,65 @@
+{#
+ # The publications: the filters (words, kind, year, theme), the list -
+ # pinned first, then by year -, the exports of what is listed. The host's
+ # layout1.html.twig gives the chrome; scholar.css the look.
+ #}
+{% extends 'layout1.html.twig' %}
+
+{% block title %}{{ '@scholar.publications.title'|trans }}{% if scholar %} · {{ scholar.name }}{% endif %}{% endblock %}
+{% block description %}{{ '@scholar.publications.description'|trans({name: scholar.name|default(''), count: total}) }}{% endblock %}
+
+{% block stylesheets %}{{ parent() }}<link rel="stylesheet" href="{{ asset('bundles/scholar/css/scholar.css') }}">{% include '@Scholar/client/_jsonld.html.twig' %}{% endblock %}
+
+{% block content %}
+{% set query = {type: filters.type, year: filters.year, theme: filters.theme ? filters.theme.slug : null, q: filters.q}|filter(v => v) %}
+<section class="scholar scholar-publications">
+    <header class="scholar-head">
+        <p class="scholar-eyebrow">{{ scholar.name|default('') }}</p>
+        <h1>{{ '@scholar.publications.title'|trans }}</h1>
+        <p class="scholar-lead">{{ '@scholar.publications.count'|trans({count: total}) }}{% if scholar and scholar.metrics.hIndex|default(null) %} · {{ '@scholar.metrics.h_index'|trans({value: scholar.metrics.hIndex, source: scholar.metrics.source|default('')}) }}{% endif %}</p>
+    </header>
+
+    <form class="scholar-filters" method="get" action="{{ path('scholar_publications') }}" role="search">
+        <label class="scholar-filter is-text"><span>{{ '@scholar.filters.words'|trans }}</span><input type="search" name="q" value="{{ filters.q }}" placeholder="{{ '@scholar.filters.words_placeholder'|trans }}"></label>
+        <label class="scholar-filter"><span>{{ '@scholar.filters.type'|trans }}</span>
+            <select name="type"><option value="">{{ '@scholar.filters.all'|trans }}</option>{% for type, n in types %}<option value="{{ type }}"{{ filters.type == type ? ' selected' }}>{{ type|scholar_type_label(n) }} ({{ n }})</option>{% endfor %}</select>
+        </label>
+        <label class="scholar-filter"><span>{{ '@scholar.filters.year'|trans }}</span>
+            <select name="year"><option value="">{{ '@scholar.filters.all'|trans }}</option>{% for year in years %}<option{{ filters.year == year ? ' selected' }}>{{ year }}</option>{% endfor %}</select>
+        </label>
+        {% if themes %}
+        <label class="scholar-filter"><span>{{ '@scholar.filters.theme'|trans }}</span>
+            <select name="theme"><option value="">{{ '@scholar.filters.all'|trans }}</option>{% for theme in themes %}<option value="{{ theme.slug }}"{{ filters.theme and filters.theme.id == theme.id ? ' selected' }}>{{ theme.title }}</option>{% endfor %}</select>
+        </label>
+        {% endif %}
+        <button type="submit" class="scholar-button">{{ '@scholar.filters.apply'|trans }}</button>
+        {% if query %}<a class="scholar-reset" href="{{ path('scholar_publications') }}">{{ '@scholar.filters.reset'|trans }}</a>{% endif %}
+    </form>
+
+    <p class="scholar-exports">{{ '@scholar.publications.export'|trans }}
+        <a href="{{ path('scholar_publications_export', query|merge({format: 'bib'})) }}" download>BibTeX</a>
+        <a href="{{ path('scholar_publications_export', query|merge({format: 'ris'})) }}" download>RIS</a>
+        <a href="{{ path('scholar_publications_export', query|merge({format: 'json'})) }}" download>CSL-JSON</a>
+    </p>
+
+    {% if publications %}
+    <div class="scholar-list">
+        {% set year = false %}
+        {% for publication in publications %}
+            {% if not publication.pinned and publication.year != year %}
+                {% set year = publication.year %}
+                <h2 class="scholar-year" id="y{{ year }}">{{ year ?? '—' }}</h2>
+            {% endif %}
+            {% include '@Scholar/client/_publication.html.twig' %}
+        {% endfor %}
+    </div>
+    {% if pages > 1 %}
+    <nav class="scholar-pages" aria-label="{{ '@scholar.publications.pages'|trans }}">
+        {% for p in 1..pages %}<a href="{{ path('scholar_publications', query|merge({page: p})) }}"{{ p == page ? ' aria-current="page"' }}>{{ p }}</a>{% endfor %}
+    </nav>
+    {% endif %}
+    {% else %}
+    <p class="scholar-empty">{{ '@scholar.publications.empty'|trans }}</p>
+    {% endif %}
+</section>
+{% endblock %}

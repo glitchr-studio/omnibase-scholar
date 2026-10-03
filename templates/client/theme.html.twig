@@ -1,0 +1,27 @@
+{# A theme or a project: its text, its years and funder, its publications. #}
+{% extends 'layout1.html.twig' %}
+
+{% block title %}{{ theme.title }}{% endblock %}
+{% block description %}{{ theme.summary ?? theme.title }}{% endblock %}
+
+{% block stylesheets %}{{ parent() }}<link rel="stylesheet" href="{{ asset('bundles/scholar/css/scholar.css') }}">{% endblock %}
+
+{% block content %}
+<section class="scholar scholar-theme-page">
+    <p class="scholar-back"><a href="{{ path('scholar_research') }}">← {{ '@scholar.research.title'|trans }}</a></p>
+    <header class="scholar-head">
+        <p class="scholar-eyebrow">{{ theme.kind.label|trans({}, 'scholar') }}{% if theme.years %} · {{ theme.years }}{% endif %}{% if theme.funder %} · {{ theme.funder }}{% endif %}</p>
+        <h1>{{ theme.title }}</h1>
+        {% if theme.summary %}<p class="scholar-lead">{{ theme.summary }}</p>{% endif %}
+        {% if theme.url %}<p><a href="{{ theme.url }}" rel="noopener" target="_blank">{{ theme.url|replace({'https://': '', 'http://': ''}) }}</a></p>{% endif %}
+    </header>
+    {% if theme.imageUrl %}<img class="scholar-theme-image" src="{{ theme.imageUrl }}" alt="" loading="lazy">{% endif %}
+    {% if theme.paragraphs %}<div class="scholar-prose">{% for p in theme.paragraphs %}<p>{{ p|nl2br }}</p>{% endfor %}</div>{% endif %}
+    {% if publications %}
+    <section class="scholar-section">
+        <h2>{{ '@scholar.publications.title'|trans }}</h2>
+        <div class="scholar-list">{% for publication in publications %}{% include '@Scholar/client/_publication.html.twig' %}{% endfor %}</div>
+    </section>
+    {% endif %}
+</section>
+{% endblock %}

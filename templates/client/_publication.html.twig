@@ -1,0 +1,24 @@
+{#
+ # One publication in a list: its year and kind, its title (to its page), the
+ # authors, where it appeared, what can be read (the full text, the DOI) and
+ # how to cite it. `publication`, and `scholar` when known.
+ #}
+{%- set url = path('scholar_publication', {id: publication.id, slug: publication.slug}) -%}
+<article class="scholar-pub{{ publication.pinned ? ' is-pinned' }}{{ publication.selected ? ' is-selected' }}" data-type="{{ publication.type }}">
+    <p class="scholar-pub-meta">
+        <span class="scholar-pub-year">{{ publication.year ?? '—' }}</span>
+        <span class="scholar-pub-type">{{ publication.type|scholar_type_label }}</span>
+        {% if publication.openAccess %}<span class="scholar-badge is-open" title="{{ '@scholar.publication.open_access'|trans }}">{{ '@scholar.publication.open'|trans }}</span>{% endif %}
+    </p>
+    <h3 class="scholar-pub-title"><a href="{{ url }}">{{ publication.title }}</a></h3>
+    {% if publication.authors %}<p class="scholar-pub-authors">{% include '@Scholar/client/_authors.html.twig' %}</p>{% endif %}
+    {% if publication.venue %}<p class="scholar-pub-venue"><em>{{ publication.venue }}</em></p>{% endif %}
+    {% if publication.note %}<p class="scholar-pub-note">{{ publication.note }}</p>{% endif %}
+    <p class="scholar-pub-links">
+        {% if publication.fullTextUrl %}<a href="{{ publication.fullTextUrl }}" rel="noopener" target="_blank">{{ '@scholar.publication.full_text'|trans }}</a>{% endif %}
+        {% if publication.doi %}<a href="https://doi.org/{{ publication.doi }}" rel="noopener" target="_blank">DOI</a>{% elseif publication.link %}<a href="{{ publication.link }}" rel="noopener" target="_blank">{{ '@scholar.publication.read'|trans }}</a>{% endif %}
+        {% if publication.buyUrl %}<a href="{{ publication.buyUrl }}" rel="noopener" target="_blank">{{ '@scholar.publication.buy'|trans }}</a>{% endif %}
+        <a href="{{ url }}#cite">{{ '@scholar.publication.cite'|trans }}</a>
+        <a href="{{ path('scholar_publication_export', {id: publication.id, format: 'bib'}) }}" download>BibTeX</a>
+    </p>
+</article>

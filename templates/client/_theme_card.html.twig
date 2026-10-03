@@ -1,0 +1,6 @@
+<article class="scholar-theme{{ theme.project ? ' is-project' }}">
+    <h3><a href="{{ path('scholar_theme', {slug: theme.slug}) }}">{{ theme.title }}</a></h3>
+    {% if theme.years or theme.funder %}<p class="scholar-pub-meta">{{ [theme.years, theme.funder]|filter(v => v)|join(' · ') }}</p>{% endif %}
+    {% if theme.summary %}<p>{{ theme.summary }}</p>{% endif %}
+    <p class="scholar-pub-meta">{{ '@scholar.publications.count'|trans({count: theme.publications|filter(p => p.shown)|length}) }}</p>
+</article>

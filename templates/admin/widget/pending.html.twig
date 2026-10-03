@@ -1,0 +1,54 @@
+{# New publications to validate (Base\Scholar\Admin\Widget\PendingPublicationsWidgetType): nothing shows on the site before. #}
+<div class="analytics-card card scholar-pending">
+    <div class="analytics-card-header">
+        <h2 class="analytics-card-title">{{ widget.label|trans({}, 'admin') }}</h2>
+    </div>
+    <div class="scholar-pending-body">
+        <a class="scholar-pending-count" href="{{ path('admin_crud_scholars_publications_index', {filters: {status: 'pending'}}) }}">
+            <strong>{{ count }}</strong>
+            <span>{{ '@scholar.admin.widget.pending'|trans({count: count}) }}</span>
+        </a>
+        {% if publications %}
+        <ul class="scholar-pending-list">
+            {% for publication in publications %}
+            <li>
+                <a href="{{ path('admin_crud_scholars_publications_detail', {entityId: publication.id}) }}">
+                    <b>{{ publication.year ?? '—' }}</b> · {{ publication.title|length > 110 ? publication.title|slice(0, 109) ~ '…' : publication.title }}
+                    <small>{{ publication.type|scholar_type_label }}{% if publication.venue %} · {{ publication.venue }}{% endif %} · {{ publication.sources|join(', ') }}</small>
+                </a>
+                <span class="scholar-pending-actions">
+                    <form method="post" action="{{ path('admin_crud_scholars_publications_approve', {entityId: publication.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('admin-action-approve') }}">
+                        <button type="submit" class="btn btn-sm btn-success" title="{{ '@scholar.admin.publication.action.approve'|trans }}"><i class="fa-solid fa-check"></i></button>
+                    </form>
+                    <form method="post" action="{{ path('admin_crud_scholars_publications_reject', {entityId: publication.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('admin-action-reject') }}">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary" title="{{ '@scholar.admin.publication.action.reject'|trans }}"><i class="fa-solid fa-ban"></i></button>
+                    </form>
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="scholar-pending-empty">{{ '@scholar.admin.widget.none'|trans }}</p>
+        {% endif %}
+        {% if hidden_cv %}<p class="scholar-pending-note"><a href="{{ path('admin_crud_scholars_positions_index') }}">{{ '@scholar.admin.widget.hidden_cv'|trans({count: hidden_cv}) }}</a></p>{% endif %}
+        {% if scholar and scholar.lastSyncAt %}
+        <p class="scholar-pending-note">{{ '@scholar.admin.widget.last_sync'|trans({date: scholar.lastSyncAt|format_datetime('medium', 'short')}) }}{% if scholar.lastSync.incomplete|default([]) %} · {{ '@scholar.admin.widget.incomplete'|trans({sources: scholar.lastSync.incomplete|keys|join(', ')}) }}{% endif %}</p>
+        {% endif %}
+    </div>
+</div>
+<style>
+    .scholar-pending-body { display: grid; gap: .75rem; padding: 0 1rem 1rem; }
+    .scholar-pending-count { display: grid; gap: .2rem; padding: .9rem 1rem; border-radius: .75rem; background: rgba(127,127,127,.08); color: inherit; text-decoration: none; }
+    .scholar-pending-count strong { font-size: 1.6rem; line-height: 1.1; }
+    .scholar-pending-count span { font-size: .8rem; opacity: .75; }
+    .scholar-pending-list { margin: 0; padding: 0; list-style: none; display: grid; gap: .5rem; font-size: .85rem; }
+    .scholar-pending-list li { display: flex; gap: .6rem; align-items: flex-start; justify-content: space-between; }
+    .scholar-pending-list a { color: inherit; text-decoration: none; }
+    .scholar-pending-list small { display: block; opacity: .65; }
+    .scholar-pending-actions { display: flex; gap: .3rem; flex: none; }
+    .scholar-pending-actions form { margin: 0; }
+    .scholar-pending-empty, .scholar-pending-note { margin: 0; font-size: .8rem; opacity: .7; }
+    .scholar-pending-note a { color: inherit; }
+</style>

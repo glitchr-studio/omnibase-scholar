@@ -1,0 +1,41 @@
+{#
+ # The books: each with its cover (the one uploaded, else Open Library's,
+ # else its title set as a cover), its publisher and year, its editions,
+ # where to buy it.
+ #}
+{% extends 'layout1.html.twig' %}
+
+{% block title %}{{ '@scholar.books.title'|trans }}{% if scholar %} · {{ scholar.name }}{% endif %}{% endblock %}
+{% block description %}{{ '@scholar.books.description'|trans({name: scholar.name|default('')}) }}{% endblock %}
+
+{% block stylesheets %}{{ parent() }}<link rel="stylesheet" href="{{ asset('bundles/scholar/css/scholar.css') }}">{% include '@Scholar/client/_jsonld.html.twig' %}{% endblock %}
+
+{% block content %}
+<section class="scholar scholar-books">
+    <header class="scholar-head">
+        <p class="scholar-eyebrow">{{ scholar.name|default('') }}</p>
+        <h1>{{ '@scholar.books.title'|trans }}</h1>
+    </header>
+    {% if books %}
+    <div class="scholar-shelf">
+        {% for book in books %}
+        <article class="scholar-book">
+            <a class="scholar-book-cover" href="{{ path('scholar_publication', {id: book.id, slug: book.slug}) }}">
+                {% if book.coverUrl %}<img src="{{ book.coverUrl }}" alt="{{ '@scholar.books.cover_of'|trans({title: book.title}) }}" loading="lazy">
+                {% else %}<span class="scholar-book-blank"><b>{{ book.title }}</b><small>{{ scholar.name|default('') }}</small></span>{% endif %}
+            </a>
+            <h2><a href="{{ path('scholar_publication', {id: book.id, slug: book.slug}) }}">{{ book.title }}</a></h2>
+            <p class="scholar-pub-venue">{{ book.venue }}{% if book.year %} · {{ book.year }}{% endif %}{% if book.editions|length > 1 %} · {{ '@scholar.books.editions'|trans({count: book.editions|length}) }}{% endif %}</p>
+            {% if book.note %}<p class="scholar-pub-note">{{ book.note }}</p>{% endif %}
+            <p class="scholar-pub-links">
+                {% if book.buyUrl %}<a class="scholar-button" href="{{ book.buyUrl }}" rel="noopener" target="_blank">{{ '@scholar.publication.buy'|trans }}</a>{% elseif book.link %}<a href="{{ book.link }}" rel="noopener" target="_blank">{{ '@scholar.books.publisher'|trans }}</a>{% endif %}
+                {% if book.isbns %}<span class="scholar-isbn">ISBN {{ book.isbns|first }}</span>{% endif %}
+            </p>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="scholar-empty">{{ '@scholar.books.empty'|trans }}</p>
+    {% endif %}
+</section>
+{% endblock %}

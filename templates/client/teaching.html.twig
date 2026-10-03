@@ -1,0 +1,24 @@
+{# Teaching: the courses and the supervisions. #}
+{% extends 'layout1.html.twig' %}
+
+{% block title %}{{ '@scholar.teaching.title'|trans }}{% if scholar %} · {{ scholar.name }}{% endif %}{% endblock %}
+{% block description %}{{ '@scholar.teaching.description'|trans({name: scholar.name|default('')}) }}{% endblock %}
+
+{% block stylesheets %}{{ parent() }}<link rel="stylesheet" href="{{ asset('bundles/scholar/css/scholar.css') }}">{% endblock %}
+
+{% block content %}
+<section class="scholar scholar-teaching">
+    <header class="scholar-head">
+        <p class="scholar-eyebrow">{{ scholar.name|default('') }}</p>
+        <h1>{{ '@scholar.teaching.title'|trans }}</h1>
+    </header>
+    {% for section, entries in sections %}
+    <section class="scholar-section" id="{{ section }}">
+        <h2>{{ ('@scholar.cv.section.' ~ section)|trans }}</h2>
+        <ol class="scholar-cv-list">{% for entry in entries %}{% include '@Scholar/client/_cv_entry.html.twig' %}{% endfor %}</ol>
+    </section>
+    {% else %}
+    {% include '@Scholar/client/_draft.html.twig' with {kind: 'teaching', message: '@scholar.draft.teaching'|trans} %}
+    {% endfor %}
+</section>
+{% endblock %}

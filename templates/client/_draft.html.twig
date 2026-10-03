@@ -1,0 +1,5 @@
+{# A place kept for what is not given yet (a portrait, a biography): marked as a draft, never filled with an invented text. #}
+<div class="scholar-draft{{ kind is defined ? ' is-' ~ kind }}" data-draft="{{ kind|default('text') }}">
+    <span class="scholar-draft-tag">{{ '@scholar.draft.tag'|trans }}</span>
+    <p>{{ message|default('@scholar.draft.text'|trans) }}</p>
+</div>
