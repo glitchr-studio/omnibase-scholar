@@ -75,6 +75,7 @@ class ScholarController extends AbstractController
         return $this->download($this->citations->export(Citations::format($format), $list), 'publications.'.$format, Citations::format($format));
     }
 
+    #[Sitemap(priority: 0.5, changefreq: 'monthly')]
     #[Route('/publications/{id}-{slug}', name: 'scholar_publication', requirements: ['id' => '\d+', 'slug' => '[a-z0-9\-]*'], methods: ['GET'])]
     public function publication(Request $request, int $id, string $slug = ''): Response
     {
@@ -150,6 +151,7 @@ class ScholarController extends AbstractController
         ]);
     }
 
+    #[Sitemap(priority: 0.6, changefreq: 'monthly')]
     #[Route('/research/{slug}', name: 'scholar_theme', requirements: ['slug' => '[a-z0-9\-]+'], methods: ['GET'])]
     public function theme(string $slug): Response
     {
