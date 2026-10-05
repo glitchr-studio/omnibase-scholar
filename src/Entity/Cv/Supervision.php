@@ -32,9 +32,6 @@ class Supervision extends CvEntry
 
     public function getLevel(): SupervisionLevel { return $this->level; }
     public function setLevel(SupervisionLevel|string $level): static { $this->level = $level instanceof SupervisionLevel ? $level : (SupervisionLevel::tryFrom($level) ?? SupervisionLevel::OTHER); return $this; }
-    /** The level as the back office's select reads and writes it. */
-    public function getLevelValue(): string { return $this->level->value; }
-    public function setLevelValue(?string $level): static { return $this->setLevel((string) $level); }
 
     public function getSubject(): ?string { return $this->subject; }
     public function setSubject(?string $subject): static { $this->subject = $subject ? trim($subject) : null; return $this; }

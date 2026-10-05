@@ -11,10 +11,8 @@ use Base\Field\SelectField;
 use Base\Field\TextField;
 use Base\Field\TextareaField;
 use Base\Scholar\Entity\Cv\Supervision;
-use Base\Scholar\Enum\SupervisionLevel;
 use Base\Scholar\Repository\ScholarRepository;
 use Symfony\Contracts\Service\Attribute\Required;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * A supervision: the student, the level, the subject, the co-supervisors, what became of it.
@@ -49,30 +47,11 @@ class SupervisionCrudController extends AbstractCrudController
         return new $entityFqcn($this->scholars?->findMain());
     }
 
-    private ?TranslatorInterface $translator = null;
-
-    #[Required]
-    public function setTranslator(TranslatorInterface $translator): void
-    {
-        $this->translator = $translator;
-    }
-
-    /** @return array<string, string> */
-    private function levels(): array
-    {
-        $levels = [];
-        foreach (SupervisionLevel::cases() as $level) {
-            $levels[$this->translator?->trans($level->label(), [], 'scholar') ?? $level->value] = $level->value;
-        }
-
-        return $levels;
-    }
-
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id')->onlyOnIndex();
         yield TextField::new('title', '@scholar.admin.cv.student')->setColumns(6);
-        yield SelectField::new('levelValue', '@scholar.admin.cv.supervision_level')->setChoices($this->levels())->setColumns(3);
+        yield SelectField::new('level', '@scholar.admin.cv.supervision_level')->setColumns(3); // the enum's cases, each naming itself
         yield TextField::new('organization', '@scholar.admin.cv.organization')->setColumns(6)->setRequired(false)->hideOnIndex();
         yield TextareaField::new('subject', '@scholar.admin.cv.subject')->setRequired(false)->hideOnIndex();
         yield TextField::new('coSupervisors', '@scholar.admin.cv.co_supervisors')->setColumns(6)->setRequired(false)->hideOnIndex();

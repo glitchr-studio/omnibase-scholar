@@ -21,6 +21,11 @@ The widget's buttons post to `admin_crud_scholars_publications_approve` and
 `_reject` with the `admin-action-approve` / `admin-action-reject` tokens
 (omnibase/admin's `#[AdminAction]`), and come back to where they were.
 
-The status, a theme's kind are kept as strings (`statusValue`, `kindValue`
-for the selects): omnibase's Uploader rebuilds an entity's previous state from
-raw values and cannot give an enum back.
+A publication's status, a theme's kind and a supervision's level are PHP
+enums (`PublicationStatus`, `ThemeKind`, `SupervisionLevel`), mapped with
+Doctrine's `enumType:` on their string columns; in the back office each is a
+select of its cases (`SelectField::new('status')`), which name themselves in
+the `scholar` domain (`TranslatableInterface`). (They were kept as strings,
+with `statusValue` / `kindValue` / `levelValue` accessors for the selects,
+until omnibase could put an enum back into an entity's previous state and
+build a select from one: same columns, no migration.)

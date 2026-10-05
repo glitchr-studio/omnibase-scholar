@@ -12,9 +12,6 @@ use Base\Field\SlugField;
 use Base\Field\TextareaField;
 use Base\Field\TextField;
 use Base\Scholar\Entity\Theme;
-use Base\Scholar\Enum\ThemeKind;
-use Symfony\Contracts\Service\Attribute\Required;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * The research themes and the projects: a page each (/research/{slug}),
@@ -22,14 +19,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ThemeCrudController extends AbstractCrudController
 {
-    private ?TranslatorInterface $translator = null;
-
-    #[Required]
-    public function setTranslator(TranslatorInterface $translator): void
-    {
-        $this->translator = $translator;
-    }
-
     public static function getEntityFqcn(): string
     {
         return Theme::class;
@@ -42,13 +31,8 @@ class ThemeCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $kinds = [];
-        foreach (ThemeKind::cases() as $kind) {
-            $kinds[$this->translator?->trans($kind->label(), [], 'scholar') ?? $kind->value] = $kind->value;
-        }
-
         yield IdField::new('id')->onlyOnIndex();
-        yield SelectField::new('kindValue', '@scholar.admin.theme.kind')->setChoices($kinds)->setColumns(3);
+        yield SelectField::new('kind', '@scholar.admin.theme.kind')->setColumns(3); // the enum's cases, each naming itself
         yield TextField::new('title', '@scholar.admin.theme.title')->setColumns(9);
         yield SlugField::new('slug')->setColumns(6)->hideOnIndex();
         yield TextareaField::new('summary', '@scholar.admin.theme.summary')->setRequired(false)->hideOnIndex();

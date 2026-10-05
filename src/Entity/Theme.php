@@ -28,9 +28,8 @@ class Theme
     #[ORM\Column(type: 'integer')]
     protected $id;
 
-    /** The ThemeKind's value: a string column, as omnibase's Uploader rebuilds an entity's previous state from raw values. */
-    #[ORM\Column(type: 'string', length: 16)]
-    protected string $kind = 'theme';
+    #[ORM\Column(type: 'string', length: 16, enumType: ThemeKind::class)]
+    protected ThemeKind $kind = ThemeKind::THEME;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -79,7 +78,7 @@ class Theme
     public function __construct(?string $title = null, ThemeKind $kind = ThemeKind::THEME)
     {
         $this->publications = new ArrayCollection();
-        $this->kind = $kind->value;
+        $this->kind = $kind;
         $this->setTitle($title);
     }
 
@@ -90,12 +89,9 @@ class Theme
 
     public function getId(): ?int { return $this->id; }
 
-    public function getKind(): ThemeKind { return ThemeKind::tryFrom($this->kind) ?? ThemeKind::THEME; }
-    public function setKind(ThemeKind|string $kind): self { $this->kind = ($kind instanceof ThemeKind ? $kind : (ThemeKind::tryFrom($kind) ?? ThemeKind::THEME))->value; return $this; }
-    public function isProject(): bool { return ThemeKind::PROJECT === $this->getKind(); }
-    /** The kind as the back office's select reads and writes it. */
-    public function getKindValue(): string { return $this->kind; }
-    public function setKindValue(?string $kind): self { return $this->setKind((string) $kind); }
+    public function getKind(): ThemeKind { return $this->kind; }
+    public function setKind(ThemeKind|string $kind): self { $this->kind = $kind instanceof ThemeKind ? $kind : (ThemeKind::tryFrom($kind) ?? ThemeKind::THEME); return $this; }
+    public function isProject(): bool { return ThemeKind::PROJECT === $this->kind; }
 
     public function getTitle(): ?string { return $this->title; }
     public function setTitle(?string $title): self

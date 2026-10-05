@@ -18,7 +18,6 @@ use Base\Field\SelectField;
 use Base\Field\TextareaField;
 use Base\Field\TextField;
 use Base\Scholar\Entity\Publication;
-use Base\Scholar\Enum\PublicationStatus;
 use Base\Scholar\Repository\ScholarRepository;
 use Omnischolar\Model\WorkType;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,13 +74,9 @@ class PublicationCrudController extends AbstractCrudController
         foreach (WorkType::cases() as $type) {
             $types[$this->translator->trans('publication.type.'.$type->value, ['count' => 1], 'scholar')] = $type->value;
         }
-        $statuses = [];
-        foreach (PublicationStatus::cases() as $status) {
-            $statuses[$this->translator->trans($status->label(), [], 'scholar')] = $status->value;
-        }
 
         yield IdField::new('id')->onlyOnIndex();
-        yield SelectField::new('statusValue', '@scholar.admin.publication.status')->setChoices($statuses)->setColumns(3);
+        yield SelectField::new('status', '@scholar.admin.publication.status')->setColumns(3); // the enum's cases, each naming itself
         yield IntegerField::new('year', '@scholar.admin.publication.year')->setColumns(2)->setDisabled(!$manual);
         yield SelectField::new('type', '@scholar.admin.publication.type')->setChoices($types)->setColumns(3)->setDisabled(!$manual);
         yield TextField::new('title', '@scholar.admin.publication.title')->setColumns(12)->setDisabled(!$manual);

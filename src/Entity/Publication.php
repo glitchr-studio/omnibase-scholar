@@ -42,9 +42,8 @@ class Publication
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     protected ?Scholar $scholar = null;
 
-    /** The PublicationStatus's value: a string column, as omnibase's Uploader rebuilds an entity's previous state from raw values. */
-    #[ORM\Column(type: 'string', length: 16)]
-    protected string $status = 'pending';
+    #[ORM\Column(type: 'string', length: 16, enumType: PublicationStatus::class)]
+    protected PublicationStatus $status = PublicationStatus::PENDING;
 
     // --- what the sources say (the columns are copied from `work`) ------------
 
@@ -239,15 +238,12 @@ class Publication
     public function getScholar(): ?Scholar { return $this->scholar; }
     public function setScholar(?Scholar $scholar): self { $this->scholar = $scholar; return $this; }
 
-    public function getStatus(): PublicationStatus { return PublicationStatus::tryFrom($this->status) ?? PublicationStatus::PENDING; }
-    public function setStatus(PublicationStatus|string $status): self { $this->status = ($status instanceof PublicationStatus ? $status : (PublicationStatus::tryFrom($status) ?? PublicationStatus::PENDING))->value; return $this; }
-    public function isPending(): bool { return PublicationStatus::PENDING === $this->getStatus(); }
-    public function isPublished(): bool { return PublicationStatus::PUBLISHED === $this->getStatus(); }
+    public function getStatus(): PublicationStatus { return $this->status; }
+    public function setStatus(PublicationStatus|string $status): self { $this->status = $status instanceof PublicationStatus ? $status : (PublicationStatus::tryFrom($status) ?? PublicationStatus::PENDING); return $this; }
+    public function isPending(): bool { return PublicationStatus::PENDING === $this->status; }
+    public function isPublished(): bool { return PublicationStatus::PUBLISHED === $this->status; }
     public function approve(): self { return $this->setStatus(PublicationStatus::PUBLISHED); }
     public function reject(): self { return $this->setStatus(PublicationStatus::REJECTED); }
-    /** The status as the back office's select reads and writes it. */
-    public function getStatusValue(): string { return $this->status; }
-    public function setStatusValue(?string $status): self { return $this->setStatus((string) $status); }
 
     /** On the site: validated and not hidden. */
     public function isShown(): bool { return $this->isPublished() && !$this->hidden; }
