@@ -18,8 +18,11 @@ screens' own buttons (`approve`, `reject` on a publication, `sync` on the
 scholar). An application's CRUD extending one of them is opened too, and may
 close an action again in its `configureActions()`
 (`->setPermission(Action::DELETE, 'ROLE_SUPERADMIN')`). The attribute needs
-an omnibase/admin that has it (main from 7474f85); on an older one it is
-ignored and the screens are written by the super-admin, as they were.
+an omnibase/admin that has it (main from 7474f85); on an
+older one the bundle declares a stand-in of that name (`compat/OpenToAdmins.php`:
+omnibase instantiates every attribute of a controller, and a class that does
+not exist stopped the site), nothing applies it and the screens are the
+super-admin's to write, as they were.
 
 ```php
 // DashboardController
