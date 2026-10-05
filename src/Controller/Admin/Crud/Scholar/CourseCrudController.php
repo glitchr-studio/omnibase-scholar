@@ -2,6 +2,7 @@
 
 namespace Base\Scholar\Controller\Admin\Crud\Scholar;
 
+use Base\Admin\Attribute\OpenToAdmins;
 use Base\Admin\Controller\AbstractCrudController;
 use Base\Admin\Filter\Filters;
 use Base\Field\BooleanField;
@@ -16,6 +17,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * A course taught: its title, where, the level, its volume, its years, a link to its material.
  */
+#[OpenToAdmins]
 class CourseCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

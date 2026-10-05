@@ -9,6 +9,18 @@ CRUD screens, under `/admin/scholars/...`:
 | Themes and projects | `Crud\Scholar\ThemeCrudController` | |
 | CV | `PositionCrudController`, `DegreeCrudController`, `AwardCrudController`, `GrantCrudController`, `CourseCrudController`, `SupervisionCrudController` | a line read from ORCID waits hidden |
 
+## Who writes
+
+These screens are the site's administrator's (`ROLE_ADMIN`: the researcher
+whose site it is), not the super-admin's only - each controller carries
+omnibase/admin's `#[OpenToAdmins]`: creating, editing and deleting, and the
+screens' own buttons (`approve`, `reject` on a publication, `sync` on the
+scholar). An application's CRUD extending one of them is opened too, and may
+close an action again in its `configureActions()`
+(`->setPermission(Action::DELETE, 'ROLE_SUPERADMIN')`). The attribute needs
+an omnibase/admin that has it (main from 7474f85); on an older one it is
+ignored and the screens are written by the super-admin, as they were.
+
 ```php
 // DashboardController
 yield MenuItem::block('scholar_pending', 'Publications à valider', 'fa-solid fa-book-open')->setSize(4);

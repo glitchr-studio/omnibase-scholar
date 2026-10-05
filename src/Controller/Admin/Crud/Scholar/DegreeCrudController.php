@@ -2,6 +2,7 @@
 
 namespace Base\Scholar\Controller\Admin\Crud\Scholar;
 
+use Base\Admin\Attribute\OpenToAdmins;
 use Base\Admin\Controller\AbstractCrudController;
 use Base\Admin\Filter\Filters;
 use Base\Field\BooleanField;
@@ -16,6 +17,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * A line of the CV: a degree - its title, where, when, the thesis and its supervisor.
  */
+#[OpenToAdmins]
 class DegreeCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

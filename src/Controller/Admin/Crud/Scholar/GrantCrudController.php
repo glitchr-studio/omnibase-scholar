@@ -2,6 +2,7 @@
 
 namespace Base\Scholar\Controller\Admin\Crud\Scholar;
 
+use Base\Admin\Attribute\OpenToAdmins;
 use Base\Admin\Controller\AbstractCrudController;
 use Base\Admin\Filter\Filters;
 use Base\Field\BooleanField;
@@ -16,6 +17,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * A line of the CV: a grant or a funded project - its funder, reference, role, years and amount.
  */
+#[OpenToAdmins]
 class GrantCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

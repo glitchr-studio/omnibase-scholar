@@ -3,6 +3,7 @@
 namespace Base\Scholar\Controller\Admin\Crud\Scholar;
 
 use Base\Admin\Attribute\AdminAction;
+use Base\Admin\Attribute\OpenToAdmins;
 use Base\Admin\Config\Action;
 use Base\Admin\Config\Actions;
 use Base\Admin\Config\Crud;
@@ -34,6 +35,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * by hand ("New") is the site's: its title, authors, year and venue are
  * the record.
  */
+#[OpenToAdmins(actions: ['approve', 'reject'])]
 class PublicationCrudController extends AbstractCrudController
 {
     private TranslatorInterface $translator;

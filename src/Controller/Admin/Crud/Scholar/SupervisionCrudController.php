@@ -2,6 +2,7 @@
 
 namespace Base\Scholar\Controller\Admin\Crud\Scholar;
 
+use Base\Admin\Attribute\OpenToAdmins;
 use Base\Admin\Controller\AbstractCrudController;
 use Base\Admin\Filter\Filters;
 use Base\Field\BooleanField;
@@ -17,6 +18,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * A supervision: the student, the level, the subject, the co-supervisors, what became of it.
  */
+#[OpenToAdmins]
 class SupervisionCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

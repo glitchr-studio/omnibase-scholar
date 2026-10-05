@@ -48,6 +48,8 @@ Pages: `/publications` (filters; BibTeX, RIS, CSL-JSON of what is listed),
 Work's storage and its keys, the sync laid over what the site has (a new work
 waits, a known one follows its sources and keeps the site's overrides, a
 rejected one stays rejected, one typed by hand is the site's), the reference
-line, the exports, the JSON-LD.
+line, the exports, the JSON-LD. Inside a host, also who writes in the back
+office (`tests/Controller/Admin/OpenToAdminsTest`: an administrator does, a
+plain user does not).
 
 License: LGPL-3.0-or-later.

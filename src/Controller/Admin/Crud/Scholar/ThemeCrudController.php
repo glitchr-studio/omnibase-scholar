@@ -2,6 +2,7 @@
 
 namespace Base\Scholar\Controller\Admin\Crud\Scholar;
 
+use Base\Admin\Attribute\OpenToAdmins;
 use Base\Admin\Controller\AbstractCrudController;
 use Base\Field\BooleanField;
 use Base\Field\IdField;
@@ -17,6 +18,7 @@ use Base\Scholar\Entity\Theme;
  * The research themes and the projects: a page each (/research/{slug}),
  * the publications filed under it (chosen on each publication).
  */
+#[OpenToAdmins]
 class ThemeCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

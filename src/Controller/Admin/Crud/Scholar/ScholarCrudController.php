@@ -3,6 +3,7 @@
 namespace Base\Scholar\Controller\Admin\Crud\Scholar;
 
 use Base\Admin\Attribute\AdminAction;
+use Base\Admin\Attribute\OpenToAdmins;
 use Base\Admin\Config\Action;
 use Base\Admin\Config\Actions;
 use Base\Admin\Controller\AbstractCrudController;
@@ -25,6 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * are theirs elsewhere, the portrait and the biography. "Sync now" reads
  * the sources at once, as the weekly scholar:sync does.
  */
+#[OpenToAdmins(actions: ['sync'])]
 class ScholarCrudController extends AbstractCrudController
 {
     private Synchronizer $synchronizer;
