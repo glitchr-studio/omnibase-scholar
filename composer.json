@@ -2,7 +2,7 @@
     "name": "omnibase/scholar",
     "description": "Scholar for omnibase: a researcher's site - publications read from OpenAlex, HAL, Crossref and the other glitchr/omnischolar sources, validated before they show, with manual overrides that survive each sync; the CV (positions, degrees, awards, grants, courses, supervisions), research themes and projects; publication, book, CV and teaching pages, BibTeX / RIS exports, schema.org JSON-LD.",
     "type": "symfony-bundle",
-    "license": "LGPL-3.0-or-later",
+    "license": "MIT",
     "keywords": ["omnibase", "scholar", "publications", "cv", "bibtex", "openalex", "hal", "omnischolar"],
     "authors": [{"name": "Marco Meyer", "email": "marco.meyer@glitchr.io"}],
     "require": {

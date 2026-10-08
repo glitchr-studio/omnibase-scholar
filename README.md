@@ -52,4 +52,4 @@ line, the exports, the JSON-LD. Inside a host, also who writes in the back
 office (`tests/Controller/Admin/OpenToAdminsTest`: an administrator does, a
 plain user does not).
 
-License: LGPL-3.0-or-later.
+License: MIT since 2026-10-09; earlier versions remain published under LGPL-3.0-or-later.
